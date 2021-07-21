@@ -10,9 +10,9 @@ import java.util.Objects;
 public class NullSafeProxy<T> {
 
     private final T object;
-    private final List<Class<? extends T>> interfaces;
+    private final List<Class<? super T>> interfaces;
 
-    private NullSafeProxy(T object, List<Class<? extends T>> interfaces) {
+    private NullSafeProxy(T object, List<Class<? super T>> interfaces) {
         this.object = object;
         this.interfaces = interfaces;
     }
@@ -51,7 +51,7 @@ public class NullSafeProxy<T> {
             this.object = object;
         }
 
-        @SafeVarargs public final NullSafeProxy<T> withInterfaces(Class<? extends T>... interfaces) {
+        @SafeVarargs public final NullSafeProxy<T> withInterfaces(Class<? super T>... interfaces) {
             return new NullSafeProxy<>(object, Arrays.asList(interfaces));
         }
     }
