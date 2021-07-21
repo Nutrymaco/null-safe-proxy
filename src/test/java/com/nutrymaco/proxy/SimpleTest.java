@@ -11,6 +11,23 @@ public class SimpleTest {
     }
 
     @Test
+    public void testProxyCreated() {
+        interface Service {
+
+            String function1(String arg1, int arg2);
+
+        }
+
+        Service service = new Service() {
+            @Override public String function1(String arg1, int arg2) {
+                return "result";
+            }
+        };
+
+        Service nullSafeService = NullSafeProxy.of(service).withInterfaces(Service.class).create();
+    }
+
+    @Test
     public void testExceptionWhenNullPass() throws NoSuchMethodException {
         interface Service {
 
@@ -38,6 +55,31 @@ public class SimpleTest {
         }
     }
 
+    @Test
+    public void testExceptionWhenNullResult() throws NoSuchMethodException {
+        interface Service {
+
+            String function1(String arg1, int arg2);
+
+        }
+
+        Service service = new Service() {
+            @Override public String function1(String arg1, int arg2) {
+                return null;
+            }
+        };
+
+        Service nullSafeService = NullSafeProxy.of(service).withInterfaces(Service.class).create();
+
+        try {
+            nullSafeService.function1("1", 2);
+        } catch (Exception exception) {
+            var function1= Service.class.getMethod("function1", String.class, int.class);
+            AssertEquals
+                    .actual(exception)
+                    .expect(new NullResultException(function1));
+        }
+    }
 
 
 }
